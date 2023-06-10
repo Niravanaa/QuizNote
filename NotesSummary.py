@@ -11,15 +11,21 @@ def format_code(content):
 
 # Function to save notes to file
 def save_notes(filename, content):
-    with open(filename, "a") as file:
-        file.write(content + "\n\n")
+    try:
+        with open(filename, "a") as file:
+            file.write(content + "\n\n")
+    except IOError:
+        messagebox.showerror("File Error", "Unable to save notes to the file.")
 
 # Function to search for keywords in notes
 def search_notes(filename, keyword):
-    with open(filename, "r") as file:
-        notes = file.read()
-        matches = re.findall(r"\b" + re.escape(keyword) + r"\b", notes, re.IGNORECASE)
-        return matches
+    try:
+        with open(filename, "r") as file:
+            notes = file.read()
+            matches = re.findall(r"\b" + re.escape(keyword) + r"\b", notes, re.IGNORECASE)
+            return matches
+    except IOError:
+        messagebox.showerror("File Error", "Unable to search for notes in the file.")
 
 # Function to open the notes file
 def open_notes(filename):
@@ -79,14 +85,20 @@ def search_button_click():
         messagebox.showwarning("Keyword Error", "Please enter a keyword to search.")
         return
 
-    matches = search_notes(filename_entry.get(), keyword)
-    if matches:
-        messagebox.showinfo("Search Results", "Keyword matches found in the following sections:\n\n" + "\n".join(matches))
-    else:
-        messagebox.showinfo("Search Results", "No matches found.")
+    try:
+        matches = search_notes(filename_entry.get(), keyword)
+        if matches:
+            messagebox.showinfo("Search Results", "Keyword matches found in the following sections:\n\n" + "\n".join(matches))
+        else:
+            messagebox.showinfo("Search Results", "No matches found.")
+    except IOError:
+        messagebox.showerror("File Error", "Unable to search for notes in the file.")
 
 def open_button_click():
-    open_notes(filename_entry.get())
+    try:
+        open_notes(filename_entry.get())
+    except IOError:
+        messagebox.showerror("File Error", "Unable to open the notes file.")
 
 # Create the main window
 window = tk.Tk()

@@ -5,7 +5,7 @@ import tkinter as tk
 from tkinter import ttk, messagebox, filedialog
 from tkinter.scrolledtext import ScrolledText
 
-# Function to format content as code block
+# Function to format content as code blocks
 def format_code(content):
     return "```" + content + "```"
 

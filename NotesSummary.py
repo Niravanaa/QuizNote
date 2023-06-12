@@ -2,7 +2,7 @@ import os
 import re
 import webbrowser
 import tkinter as tk
-from tkinter import ttk, messagebox
+from tkinter import ttk, messagebox, filedialog
 from tkinter.scrolledtext import ScrolledText
 
 # Function to format content as code block
@@ -29,9 +29,8 @@ def search_notes(filename, keyword):
 
 # Function to open the notes file
 def open_notes(filename):
-    actualFilename = os.path.join(script_dir, filename)
-    if os.path.exists(actualFilename):
-        webbrowser.open(actualFilename)
+    if os.path.exists(filename):
+        webbrowser.open(filename)
     else:
         messagebox.showerror("File Error", "File does not exist.")
 
@@ -85,20 +84,24 @@ def search_button_click():
         messagebox.showwarning("Keyword Error", "Please enter a keyword to search.")
         return
 
-    try:
-        matches = search_notes(filename_entry.get(), keyword)
-        if matches:
-            messagebox.showinfo("Search Results", "Keyword matches found in the following sections:\n\n" + "\n".join(matches))
-        else:
-            messagebox.showinfo("Search Results", "No matches found.")
-    except IOError:
-        messagebox.showerror("File Error", "Unable to search for notes in the file.")
+    filename = filedialog.askopenfilename(title="Select Notes File")
+    if filename:
+        try:
+            matches = search_notes(filename, keyword)
+            if matches:
+                messagebox.showinfo("Search Results", "Keyword matches found in the following sections:\n\n" + "\n".join(matches))
+            else:
+                messagebox.showinfo("Search Results", "No matches found.")
+        except IOError:
+            messagebox.showerror("File Error", "Unable to search for notes in the file.")
 
 def open_button_click():
-    try:
-        open_notes(filename_entry.get())
-    except IOError:
-        messagebox.showerror("File Error", "Unable to open the notes file.")
+    filename = filedialog.askopenfilename(title="Select Notes File")
+    if filename:
+        try:
+            open_notes(filename)
+        except IOError:
+            messagebox.showerror("File Error", "Unable to open the notes file.")
 
 # Create the main window
 window = tk.Tk()
